@@ -1,21 +1,21 @@
-import { Suspense } from "react";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { getQueryClient, trpc } from "@/trpc/server"
-import { Client } from "./client";
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { useTRPC } from "@/trpc/client";
+import { useMutation } from "@tanstack/react-query";
 
 
-
-const page = async() => {
-  const queryClient = getQueryClient();
-  void queryClient.prefetchQuery(trpc.createAI.queryOptions({text:"Ravitej Prefetch"}));
+const page = () => {
+  const trpc = useTRPC();
+  const invoke = useMutation(trpc.invoke.mutationOptions({}))
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <Suspense fallback={<p>Loading...</p>}>
-          <Client/>
-      </Suspense>
-    </HydrationBoundary>
-  )
-}
+    <div className="p-1 max-w-7xl mx-auto">
+    <Button onClick={()=>invoke.mutate({text: "Ravitej"})}>
+      Invoke Inngest Function
+    </Button>
+  </div>
+  );
+};
 
 export default page
